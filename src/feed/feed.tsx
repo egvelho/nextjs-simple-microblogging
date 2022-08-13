@@ -1,8 +1,11 @@
+import React from "react";
 import colors from "src/consts/colors.json";
 import { spacing } from "src/utils/spacing";
 import { resource } from "src/utils/resource";
 import { FAButton, FAButtonProps } from "src/components/fa-button";
+import { createPubSub } from "src/utils/create-pubsub";
 import { Message, MessageProps } from "./message";
+import { WritePostDialog } from "./write-post-dialog";
 
 export type FeedProps = {
   messages: MessagePoolProps["messages"];
@@ -16,13 +19,26 @@ type MessagePoolProps = {
 
 const fabPosition: FAButtonProps["position"] = [spacing(4), spacing(4)];
 
+const toggleSignInDialog = createPubSub("toggleSignInDialog");
+
 export function Feed({ messages }: FeedProps) {
+  const [writePostDialogOpen, setWritePostDialogOpen] = React.useState(false);
+
   return (
     <div className="feed-wrapper">
+      <WritePostDialog
+        open={writePostDialogOpen}
+        onRequestClose={() => setWritePostDialogOpen(false)}
+      />
       <FAButton
-        onClick={async () => {}}
+        onClick={() => {
+          const toggleOpen = true;
+          //setWritePostDialogOpen(true);
+          toggleSignInDialog.publish(toggleOpen);
+        }}
         iconSrc={resource("writeMessageIcon")}
         position={fabPosition}
+        secondaryColor
       />
       <div className="message-pool-wrapper">
         <MessagePool messages={messages} />

@@ -3,10 +3,11 @@ import layout from "src/consts/layout.json";
 import type { Resource } from "src/utils/resource";
 
 export type FAButtonProps = {
-  onClick: () => Promise<void>;
-  backgroundColor?: string;
+  onClick: () => Promise<void> | void;
   iconSrc: Resource;
   position: [number | string, number | string];
+  primaryColor?: boolean;
+  secondaryColor?: boolean;
 };
 
 const size = 56;
@@ -16,8 +17,14 @@ export function FAButton({
   iconSrc,
   onClick,
   position: [bottom, right],
-  backgroundColor = colors.secondary,
+  primaryColor,
+  secondaryColor,
 }: FAButtonProps) {
+  const backgroundColor =
+    (primaryColor && colors.primary) ||
+    (secondaryColor && colors.secondary) ||
+    colors.primary;
+
   return (
     <button
       onClick={onClick}
@@ -42,7 +49,7 @@ export function FAButton({
       <style jsx>{`
         :hover {
           cursor: pointer;
-          opacity: 0.9;
+          opacity: ${colors.buttonHoverOpacity};
         }
       `}</style>
     </button>

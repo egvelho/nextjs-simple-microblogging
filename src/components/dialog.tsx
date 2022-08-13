@@ -1,12 +1,12 @@
 import colors from "src/consts/colors.json";
 import layout from "src/consts/layout.json";
 import { ClientRender } from "src/components/client-render";
-import { spacing } from "src/utils/spacing";
+import { Card } from "src/components/card";
 
 export type DialogProps = {
   children: React.ReactNode;
   open: boolean;
-  onRequestClose: () => Promise<void>;
+  onRequestClose: () => Promise<void> | void;
 };
 
 export function Dialog({ children, open, onRequestClose }: DialogProps) {
@@ -16,9 +16,24 @@ export function Dialog({ children, open, onRequestClose }: DialogProps) {
 
   return (
     <ClientRender>
-      <div className="dialog-backdrop" onClick={() => onRequestClose()}>
-        <div className="dialog-wrapper">
-          <div className="dialog-card">{children}</div>
+      <div className="dialog-wrapper">
+        <div
+          className="dialog-backdrop"
+          onClick={(event) => {
+            if (
+              (event.target as typeof event.currentTarget).className.includes(
+                "dialog-card-wrapper"
+              )
+            ) {
+              onRequestClose();
+            }
+          }}
+        >
+          <div className="dialog-card-wrapper">
+            <div className="dialog-card">
+              <Card>{children}</Card>
+            </div>
+          </div>
         </div>
         <style jsx>{`
           :global(body) {
@@ -29,25 +44,19 @@ export function Dialog({ children, open, onRequestClose }: DialogProps) {
             width: 100%;
             height: 100%;
             position: absolute;
-            top: 0;
+            top: ${window.scrollY}px;
             left: 0;
             background-color: ${colors.backdropDark};
             z-index: ${layout.level.backdrop};
           }
 
-          .dialog-wrapper {
+          .dialog-card-wrapper {
             z-index: ${layout.level.dialog};
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100%;
             height: 100%;
-          }
-
-          .dialog-card {
-            padding: ${spacing(2)};
-            border-radius: ${layout.borderRadius.card};
-            background-color: ${colors.white};
           }
         `}</style>
       </div>

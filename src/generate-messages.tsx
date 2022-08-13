@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import type { Resource } from "src/utils/resource";
-import type { MessageProps } from "src/components/feed/message";
+import type { MessageProps } from "src/feed/message";
 
 export type GeneratedMessage = Omit<MessageProps, "createdAt"> & {
   createdAt: string;

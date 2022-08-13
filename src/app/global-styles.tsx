@@ -6,8 +6,13 @@ export function GlobalStyles() {
       body {
         font-size: 18px;
         font-family: "Helvetica";
-        color: ${colors.textDark};
-        background-color: ${colors.grey};
+        color: ${colors.textDarkPrimary};
+        background-color: ${colors.lightGrey};
+      }
+
+      textarea,
+      input {
+        font-family: "Helvetica";
       }
 
       h1,

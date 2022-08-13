@@ -3,9 +3,9 @@ import app from "src/consts/app.json";
 import { href } from "src/utils/href";
 import { spacing } from "src/utils/spacing";
 import { resource } from "src/utils/resource";
-import { GlobalStyles } from "src/global-styles";
-import { AppBar, AppBarProps } from "src/components/app-bar";
-import { SignInDialog } from "src/components/sign-in-dialog";
+import { GlobalStyles } from "src/app/global-styles";
+import { AppBar, AppBarProps } from "src/app/app-bar";
+import { SignInDialog } from "src/app/sign-in-dialog";
 import { Link } from "src/components/link";
 
 const navBarItems: AppBarProps["navBarItems"] = [

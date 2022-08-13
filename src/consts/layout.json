@@ -5,7 +5,14 @@
     "backdrop": 102,
     "fab": 101
   },
+  "fontSize": {
+    "title": "1.4em",
+    "subtitle": "0.9em",
+    "hint": "0.7em"
+  },
   "borderRadius": {
-    "card": "8px"
+    "card": "8px",
+    "button": "4px",
+    "field": "12px"
   }
 }

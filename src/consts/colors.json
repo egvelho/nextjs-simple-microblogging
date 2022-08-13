@@ -1,11 +1,14 @@
 {
-  "primary": "#ff4081",
-  "secondary": "#37474f",
+  "primary": "#6200ee",
+  "secondary": "#ff4081",
   "white": "#fff",
   "black": "#000",
-  "grey": "#f9f9f9",
-  "textLight": "rgba(255, 255, 255, .8)",
-  "textDark": "rgba(0, 0, 0, .8)",
+  "lightGrey": "#f9f9f9",
+  "error": "#f44336",
+  "textDarkPrimary": "rgba(0, 0, 0, .8)",
+  "textDarkSecondary": "rgba(0, 0, 0, .6)",
   "borderDark": "rgba(0, 0, 0, .2)",
-  "backdropDark": "rgba(0, 0, 0, .4)"
+  "backdropDark": "rgba(0, 0, 0, .4)",
+  "disabled": "rgba(0, 0, 0, .2)",
+  "buttonHoverOpacity": 0.9
 }
