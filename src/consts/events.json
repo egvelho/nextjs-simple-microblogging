@@ -1,3 +1,4 @@
 {
-  "toggleSignInDialog": "TOGGLE_SIGNIN_DIALOG"
+  "toggleSignInDialog": "TOGGLE_SIGNIN_DIALOG",
+  "displayToastMessage": "DISPLAY_TOAST_MESSAGE"
 }

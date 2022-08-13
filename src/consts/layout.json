@@ -1,6 +1,7 @@
 {
   "spacing": 8,
   "level": {
+    "toast": 104,
     "dialog": 103,
     "backdrop": 102,
     "fab": 101
@@ -13,6 +14,7 @@
   "borderRadius": {
     "card": "8px",
     "button": "4px",
-    "field": "12px"
+    "field": "12px",
+    "toast": "24px"
   }
 }

@@ -5,6 +5,7 @@ import { spacing } from "src/utils/spacing";
 import { resource } from "src/utils/resource";
 import { GlobalStyles } from "src/app/global-styles";
 import { AppBar, AppBarProps } from "src/app/app-bar";
+import { Toast } from "src/app/toast";
 import { SignInDialog } from "src/app/sign-in-dialog";
 import { Link } from "src/components/link";
 
@@ -40,6 +41,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <Component {...pageProps} />
       </main>
       <SignInDialog />
+      <Toast />
       <GlobalStyles />
     </div>
   );

@@ -10,6 +10,7 @@ export type ButtonProps = {
   secondaryColor?: boolean;
   disabled?: boolean;
   loading?: boolean;
+  formSubmit?: boolean;
   onClick?: () => Promise<void> | void;
 } & (Omit<LinkProps, "children"> | {});
 
@@ -19,6 +20,7 @@ export function Button({
   primaryColor,
   secondaryColor,
   loading,
+  formSubmit,
   onClick,
   ...linkProps
 }: ButtonProps) {
@@ -31,6 +33,7 @@ export function Button({
   const button = (
     <>
       <button
+        type={formSubmit ? "submit" : undefined}
         disabled={disabled || loading}
         className="button"
         onClick={onClick}
