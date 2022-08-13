@@ -1,0 +1,11 @@
+{
+  "spacing": 8,
+  "level": {
+    "dialog": 103,
+    "backdrop": 102,
+    "fab": 101
+  },
+  "borderRadius": {
+    "card": "8px"
+  }
+}

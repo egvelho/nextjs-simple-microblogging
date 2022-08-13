@@ -1,0 +1,31 @@
+{
+  "name": "nextjs-simple-microblogging",
+  "version": "1.0.0",
+  "description": "Simple microblogging in Next.js using state-of-art tools.",
+  "main": "index.js",
+  "scripts": {
+    "start": "next start",
+    "dev": "next dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/egvelho/nextjs-simple-microblogging.git"
+  },
+  "author": "egvelho",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/egvelho/nextjs-simple-microblogging/issues"
+  },
+  "homepage": "https://github.com/egvelho/nextjs-simple-microblogging#readme",
+  "dependencies": {
+    "@faker-js/faker": "^7.4.0",
+    "luxon": "^3.0.1",
+    "next": "^12.2.5"
+  },
+  "devDependencies": {
+    "@types/luxon": "^3.0.0",
+    "@types/node": "^18.7.2",
+    "@types/react": "^18.0.17",
+    "typescript": "^4.7.4"
+  }
+}

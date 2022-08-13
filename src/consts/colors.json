@@ -1,0 +1,11 @@
+{
+  "primary": "#ff4081",
+  "secondary": "#37474f",
+  "white": "#fff",
+  "black": "#000",
+  "grey": "#f9f9f9",
+  "textLight": "rgba(255, 255, 255, .8)",
+  "textDark": "rgba(0, 0, 0, .8)",
+  "borderDark": "rgba(0, 0, 0, .2)",
+  "backdropDark": "rgba(0, 0, 0, .4)"
+}
