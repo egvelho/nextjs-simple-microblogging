@@ -8,7 +8,7 @@ export type GeneratedMessage = Omit<MessageProps, "createdAt"> & {
 
 export function generateMessages(amount: number): GeneratedMessage[] {
   return Array.from({ length: amount }).map(() => ({
-    id: faker.datatype.uuid(),
+    id: faker.datatype.number(),
     username: `@${faker.internet.userName().toLowerCase()}`,
     avatarSrc: faker.image.avatar() as Resource,
     createdAt: faker.date.recent().toJSON(),
