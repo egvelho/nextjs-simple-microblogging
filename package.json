@@ -4,6 +4,7 @@
   "description": "Simple microblogging in Next.js using state-of-art tools.",
   "main": "index.js",
   "scripts": {
+    "build": "next build",
     "start": "next start",
     "dev": "next dev",
     "typecheck": "tsc",
