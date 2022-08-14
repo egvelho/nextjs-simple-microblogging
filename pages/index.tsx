@@ -14,7 +14,7 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
     props: {
       latestPosts,
     },
-    revalidate: 10,
+    revalidate: 5,
   };
 };
 
