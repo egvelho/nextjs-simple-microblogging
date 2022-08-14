@@ -20,6 +20,7 @@ const texts = {
     `Olá ${username}, bom ver você por aqui!`,
 };
 
+const toggleAuthState = createPubSub("toggleAuthState");
 const displayToastMessage = createPubSub("displayToastMessage");
 
 const initialEmailVerificationForm = {
@@ -79,6 +80,7 @@ export function EmailVerification({ step, setStep }: SignInStateProps) {
       } else {
         Token.set(response.data.token);
         emailVerificationForm.reset();
+        toggleAuthState.publish(true);
 
         if (response.data.user) {
           displayToastMessage.publish({

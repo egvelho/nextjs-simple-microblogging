@@ -1,3 +1,4 @@
+import React from "react";
 import { spacing } from "client/utils/spacing";
 import { elevation } from "client/utils/elevation";
 import { Link, LinkProps } from "client/components/link";
@@ -17,8 +18,14 @@ export function AppBar({ appBarLogo, navBarItems }: AppBarProps) {
     <div className="app-bar">
       <h1 className="app-bar-logo">{appBarLogo}</h1>
       <nav>
-        {navBarItems.map(({ label, href }) => (
-          <Link anchor href={href} key={href}>
+        {navBarItems.map(({ label, href, onClick, external }) => (
+          <Link
+            anchor
+            href={href}
+            key={label}
+            onClick={onClick}
+            external={external}
+          >
             {label}
           </Link>
         ))}

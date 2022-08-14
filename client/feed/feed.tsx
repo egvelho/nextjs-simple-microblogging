@@ -35,7 +35,7 @@ export function Feed({ messages }: FeedProps) {
         onClick={() => {
           const toggleOpen = true;
 
-          if (Token.get() !== undefined) {
+          if (!!Token.get()) {
             setWritePostDialogOpen(toggleOpen);
           } else {
             toggleSignInDialog.publish(toggleOpen);

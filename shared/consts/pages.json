@@ -1,5 +1,5 @@
 {
   "home": "/",
   "signIn": "/entrar",
-  "egvelhoGithub": "https://github.com/egvelho"
+  "sourceGithub": "https://github.com/egvelho/nextjs-simple-microblogging"
 }

@@ -12,7 +12,7 @@ const texts = {
     "Houve um erro desconhecido. Por favor, tente novamente mais tarde.",
 };
 
-const toggleLoadingState = createPubSub("toggleLoadingState");
+const toggleAuthState = createPubSub("toggleAuthState");
 const displayToastMessage = createPubSub("displayToastMessage");
 
 export function useApi<RequestData, ResponseData>(
@@ -24,7 +24,6 @@ export function useApi<RequestData, ResponseData>(
 
   const callEndpoint = async (data: RequestData) => {
     setLoading(true);
-    toggleLoadingState.publish(true);
     const token = Token.get();
     const headers = token
       ? {
@@ -41,10 +40,10 @@ export function useApi<RequestData, ResponseData>(
     });
 
     setLoading(false);
-    toggleLoadingState.publish(false);
 
     if (response.status === 401) {
       Token.remove();
+      toggleAuthState.publish(false);
       await router.push(href("signIn"));
 
       displayToastMessage.publish({

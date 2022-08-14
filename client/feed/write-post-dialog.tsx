@@ -86,7 +86,14 @@ export function WritePostDialog({
   return (
     <Dialog
       open={open}
-      onRequestClose={createPost.loading ? () => {} : onRequestClose}
+      onRequestClose={
+        createPost.loading
+          ? () => {}
+          : () => {
+              createPostForm.reset();
+              onRequestClose();
+            }
+      }
     >
       <div className="write-post-dialog-header">
         <Title>{texts.title}</Title>
