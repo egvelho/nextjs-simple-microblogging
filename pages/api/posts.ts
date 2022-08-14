@@ -17,7 +17,7 @@ export default async function posts(req: NextApiRequest, res: NextApiResponse) {
 
   const post = await insertPost({
     ...payload,
-    userId: user.id,
+    userId: user.id as number,
   });
 
   res.status(200).json({ post });
