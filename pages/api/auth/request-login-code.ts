@@ -27,7 +27,7 @@ export default async function requestLoginCode(
   const email = payload.email;
   const token = JWT.sign({ code, email });
 
-  Email.send({
+  await Email.send({
     to: payload.email,
     subject: texts.emailCodeSubject,
     markdown: texts.emailCodeContent(code),
