@@ -40,30 +40,26 @@ export function CreateAccount({ step, setStep }: SignInStateProps) {
     username: texts.createAccountUsernamePlaceholder,
   });
 
-  function onSubmit() {
-    async () => {
-      const validationResults = await createAccountForm.pushFormErrors();
+  async function onSubmit() {
+    const validationResults = await createAccountForm.pushFormErrors();
 
-      if (validationResults.success === false) {
-        return;
+    if (validationResults.success === false) {
+      return;
+    }
+
+    const response = await createAccount.callEndpoint(createAccountForm.state);
+
+    if (response.data) {
+      if (response.data.errors) {
+        createAccountForm.pushFormErrors(response.data.errors);
+      } else {
+        await router.push(href("home"));
+        createAccountForm.reset();
+        displayToastMessage.publish({
+          message: texts.createAccountSuccessToast,
+        });
       }
-
-      const response = await createAccount.callEndpoint(
-        createAccountForm.state
-      );
-
-      if (response.data) {
-        if (response.data.errors) {
-          createAccountForm.pushFormErrors(response.data.errors);
-        } else {
-          await router.push(href("home"));
-          createAccountForm.reset();
-          displayToastMessage.publish({
-            message: texts.createAccountSuccessToast,
-          });
-        }
-      }
-    };
+    }
   }
 
   return (
