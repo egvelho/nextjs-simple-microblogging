@@ -33,9 +33,9 @@ export default async function verifyLoginCode(
 
       res.status(200).json({ user, token });
     }
+  } else {
+    res
+      .status(200)
+      .json({ errors: { verificationCode: [texts.invalidVerificationCode] } });
   }
-
-  res
-    .status(200)
-    .json({ errors: { verificationCode: [texts.invalidVerificationCode] } });
 }
