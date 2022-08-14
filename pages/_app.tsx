@@ -1,13 +1,13 @@
 import type { AppProps } from "next/app";
-import app from "src/consts/app.json";
-import { href } from "src/utils/href";
-import { spacing } from "src/utils/spacing";
-import { resource } from "src/utils/resource";
-import { GlobalStyles } from "src/app/global-styles";
-import { AppBar, AppBarProps } from "src/app/app-bar";
-import { Toast } from "src/app/toast";
-import { SignInDialog } from "src/app/sign-in-dialog";
-import { Link } from "src/components/link";
+import { href } from "client/utils/href";
+import { spacing } from "client/utils/spacing";
+import { resource } from "client/utils/resource";
+import { GlobalStyles } from "client/app/global-styles";
+import { AppBar, AppBarProps } from "client/app/app-bar";
+import { Toast } from "client/app/toast";
+import { SignInDialog } from "client/app/sign-in-dialog";
+import { Link } from "client/components/link";
+import app from "shared/consts/app.json";
 
 const navBarItems: AppBarProps["navBarItems"] = [
   {

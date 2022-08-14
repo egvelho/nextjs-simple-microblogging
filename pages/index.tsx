@@ -1,6 +1,6 @@
 import type { GetStaticProps } from "next";
-import { Feed } from "src/feed/feed";
-import { generateMessages, GeneratedMessage } from "src/generate-messages";
+import { Feed } from "client/feed/feed";
+import { generateMessages, GeneratedMessage } from "shared/generate-messages";
 
 type HomeProps = {
   lastMessages: GeneratedMessage[];

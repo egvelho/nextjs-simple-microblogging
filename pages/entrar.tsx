@@ -1,24 +1,21 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { createPubSub } from "src/utils/create-pubsub";
-import { href } from "src/utils/href";
-import { Card } from "src/components/card";
-import { Title } from "src/components/title";
-import { Subtitle } from "src/components/subtitle";
-import { spacing } from "src/utils/spacing";
+import { createPubSub } from "client/utils/create-pubsub";
+import { href } from "client/utils/href";
+import { Card } from "client/components/card";
+import { Title } from "client/components/title";
+import { Subtitle } from "client/components/subtitle";
+import { spacing } from "client/utils/spacing";
 import {
   EmailVerificationForm,
   EmailVerificationFormStep,
-} from "src/sign-in/email-verification-form";
-import { CreateAccountForm } from "src/sign-in/create-account-form";
-import { useForm } from "src/utils/use-form";
-import { validateSchemaHOC } from "src/utils/validate-schema-hoc";
-import {
-  createAccountSchema,
-  CreateAccountSchema,
-} from "src/schemas/create-account-schema";
-import { submitEmailSchema } from "src/schemas/submit-email-schema";
-import { verifyEmailSchema } from "src/schemas/verify-email-schema";
+} from "client/sign-in/email-verification-form";
+import { CreateAccountForm } from "client/sign-in/create-account-form";
+import { useForm } from "client/utils/use-form";
+import { validateSchemaHOC } from "client/utils/validate-schema-hoc";
+import { createAccountSchema } from "shared/schemas/create-account-schema";
+import { requestLoginCodeSchema } from "shared/schemas/request-login-code-schema";
+import { verifyLoginCodeSchema } from "shared/schemas/verify-login-code-schema";
 
 const texts = {
   submitEmailStepTitle: "Acessar o microblogue",
@@ -123,9 +120,9 @@ function EmailVerification({ step, setStep, loading }: SignInStateProps) {
     initialState: initialEmailVerificationForm,
     async validate(form) {
       if (step === "SUBMIT_EMAIL_STEP") {
-        return validateSchemaHOC(submitEmailSchema)(form);
+        return validateSchemaHOC(requestLoginCodeSchema)(form);
       } else {
-        return validateSchemaHOC(verifyEmailSchema)(form);
+        return validateSchemaHOC(verifyLoginCodeSchema)(form);
       }
     },
   });
