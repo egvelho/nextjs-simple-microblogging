@@ -8,5 +8,5 @@ export const userSchema = z.object({
   lastName: z.string(),
   email: z.string(),
   avatar: z.string(),
-  id: z.number(),
+  id: z.number().optional(),
 });

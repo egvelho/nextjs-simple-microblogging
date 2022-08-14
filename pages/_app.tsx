@@ -1,5 +1,6 @@
 import React from "react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { href } from "client/utils/href";
 import { spacing } from "client/utils/spacing";
 import { resource } from "client/utils/resource";
@@ -39,6 +40,7 @@ function AppBarLogo() {
 }
 
 export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
   const [displayAuthLinks, setDisplayAuthLinks] = React.useState(false);
 
   React.useEffect(() => {
@@ -61,8 +63,9 @@ export default function App({ Component, pageProps }: AppProps) {
     ? [
         {
           label: texts.logoutButton,
-          onClick() {
+          async onClick() {
             Token.remove();
+            await router.push(href("home"));
             displayToastMessage.publish({
               message: texts.logoutToastMessage,
               error: false,

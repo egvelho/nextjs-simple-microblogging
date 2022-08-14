@@ -1,4 +1,6 @@
 import React from "react";
+import { useRouter } from "next/router";
+import { href } from "client/utils/href";
 import { useForm } from "client/utils/use-form";
 import { useApi } from "client/utils/use-api";
 import { validateSchemaHOC } from "client/utils/validate-schema-hoc";
@@ -15,6 +17,7 @@ import type { SignInStateProps } from "./types";
 const texts = {
   emailPlaceholder: "Email",
   tokenHidden: "Token (oculto)",
+  emailVerificationSuccess: "Email verificado com sucesso!",
   emailVerificationCodePlaceholder: "Código de verificação",
   signInSuccessToast: (username: string) =>
     `Olá ${username}, bom ver você por aqui!`,
@@ -30,6 +33,8 @@ const initialEmailVerificationForm = {
 };
 
 export function EmailVerification({ step, setStep }: SignInStateProps) {
+  const router = useRouter();
+
   const requestLoginCode = useApi("POST", "requestLoginCode");
   const verifyLoginCode = useApi("POST", "verifyLoginCode");
 
@@ -61,7 +66,9 @@ export function EmailVerification({ step, setStep }: SignInStateProps) {
       if (response.data.errors) {
         emailVerificationForm.pushFormErrors(response.data.errors);
       } else {
+        await emailVerificationForm.reset();
         emailVerificationForm.setFormState({
+          email: emailVerificationForm.state.email,
           token: response.data.token,
         });
         setStep("VERIFY_EMAIL_STEP");
@@ -83,10 +90,16 @@ export function EmailVerification({ step, setStep }: SignInStateProps) {
         toggleAuthState.publish(true);
 
         if (response.data.user) {
+          await router.push(href("home"));
           displayToastMessage.publish({
-            message: texts.signInSuccessToast(response.data.username),
+            message: texts.signInSuccessToast(response.data.user.username),
+            error: false,
           });
         } else {
+          displayToastMessage.publish({
+            message: texts.emailVerificationSuccess,
+            error: false,
+          });
           setStep("CREATE_ACCOUNT_STEP");
         }
       }
