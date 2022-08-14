@@ -10,7 +10,7 @@ import { useApi } from "client/utils/use-api";
 import app from "shared/consts/app.json";
 import { useForm } from "client/utils/use-form";
 import { validateSchemaHOC } from "client/utils/validate-schema-hoc";
-import { postSchema } from "shared/schemas/post-schema";
+import { createPostSchema } from "shared/schemas/create-post-schema";
 
 const texts = {
   title: "Enviar mensagem",
@@ -39,25 +39,49 @@ export function WritePostDialog({
 }: WritePostDialogProps) {
   const createPost = useApi("post", "createPost");
 
-  const postFormControl = useForm({
+  const createPostForm = useForm({
     initialState: initialPostForm,
-    validate: validateSchemaHOC(postSchema),
+    validate: validateSchemaHOC(createPostSchema),
   });
 
-  const postFormInputs = postFormControl.mapToFormInputs({
+  const postFormInputs = createPostForm.mapToFormInputs({
     message: texts.messagePlaceholder,
   });
 
   const messageHintText =
-    postFormControl.form.message.errors.length > 0 ? (
-      postFormControl.form.message.errors[0]
+    createPostForm.form.message.errors.length > 0 ? (
+      createPostForm.form.message.errors[0]
     ) : (
       <span style={{ textAlign: "right", display: "block" }}>
         {texts.messageHintText(
-          messageMaxLength - postFormControl.state.message.length
+          messageMaxLength - createPostForm.state.message.length
         )}
       </span>
     );
+
+  async function onSubmit() {
+    const validationResults = await createPostForm.pushFormErrors();
+
+    if (validationResults.success === false) {
+      return;
+    }
+
+    const response = await createPost.callEndpoint(createPostForm.state);
+
+    if (response.data) {
+      if (response.data.errors) {
+        createPostForm.pushFormErrors(response.data.errors);
+      } else {
+        onRequestClose();
+
+        displayToastMessage.publish({
+          message: texts.writePostSuccess,
+        });
+
+        createPostForm.reset();
+      }
+    }
+  }
 
   return (
     <Dialog
@@ -71,22 +95,7 @@ export function WritePostDialog({
       <form
         onSubmit={async (event) => {
           event.preventDefault();
-
-          const validationResults = await postFormControl.pushFormErrors();
-
-          if (validationResults.success === false) {
-            return;
-          }
-
-          const response = await createPost.callEndpoint(postFormControl.state);
-
-          if (response.data) {
-            onRequestClose();
-
-            displayToastMessage.publish({
-              message: texts.writePostSuccess,
-            });
-          }
+          await onSubmit();
         }}
       >
         <TextArea

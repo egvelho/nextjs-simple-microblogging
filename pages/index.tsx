@@ -1,33 +1,14 @@
 import type { GetStaticProps } from "next";
 import { Feed } from "client/feed/feed";
-import { getConnection, sql } from "server/get-connection";
-import { PostSchema } from "shared/schemas/post-schema";
-import type { UserSchema } from "shared/schemas/user-schema";
 import { Resource } from "client/utils/resource";
-
-type Message = PostSchema & UserSchema;
+import { getLatestPosts, LatestPosts } from "server/queries/get-latest-posts";
 
 type HomeProps = {
-  latestPosts: readonly Message[];
+  latestPosts: LatestPosts;
 };
 
 export const getStaticProps: GetStaticProps<HomeProps> = async () => {
-  const connection = await getConnection();
-  const latestPosts = await connection((routine) =>
-    routine.many<PostSchema & UserSchema>(
-      sql`
-      select
-        posts.id,
-        posts.message,
-        posts."createdAt",
-        users.avatar,
-        users.username
-      from posts
-      left join users on users.id = "userId"
-      order by posts."createdAt" desc
-      limit 10`
-    )
-  );
+  const latestPosts = await getLatestPosts();
 
   return {
     props: {

@@ -1,6 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
-import axios, { Method } from "axios";
+import axios, { Method, AxiosResponse } from "axios";
 import { createPubSub } from "client/utils/create-pubsub";
 import { href } from "client/utils/href";
 import { Token } from "client/utils/token";
@@ -32,21 +32,27 @@ export function useApi<RequestData, ResponseData>(
         }
       : undefined;
 
-    const axiosInstance = getAxiosInstance(method);
-    const response = await axiosInstance(endpoints[endpoint], data, {
+    const response: AxiosResponse = await axios({
+      method,
+      url: endpoints[endpoint],
+      data,
       headers,
+      validateStatus: () => true,
     });
 
     setLoading(false);
     toggleLoadingState.publish(false);
 
     if (response.status === 401) {
+      Token.remove();
       await router.push(href("signIn"));
 
       displayToastMessage.publish({
         message: texts.sessionExpiredText,
         error: false,
       });
+
+      return {} as AxiosResponse;
     }
 
     if (response.status >= 500) {
@@ -54,6 +60,8 @@ export function useApi<RequestData, ResponseData>(
         message: texts.serverError,
         error: true,
       });
+
+      return {} as AxiosResponse;
     }
 
     return response;
@@ -63,21 +71,4 @@ export function useApi<RequestData, ResponseData>(
     loading,
     callEndpoint,
   };
-}
-
-function getAxiosInstance(method: Method) {
-  switch (method.toUpperCase()) {
-    case "GET":
-      return axios.get;
-    case "POST":
-      return axios.post;
-    case "PUT":
-      return axios.put;
-    case "PATCH":
-      return axios.patch;
-    case "DELETE":
-      return axios.delete;
-    default:
-      return axios.get;
-  }
 }

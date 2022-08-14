@@ -1,4 +1,5 @@
 import type { AppProps } from "next/app";
+import Head from "next/head";
 import { href } from "client/utils/href";
 import { spacing } from "client/utils/spacing";
 import { resource } from "client/utils/resource";
@@ -36,6 +37,11 @@ function AppBarLogo() {
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <div id="page-wrapper">
+      <Head>
+        <title>{app.name}</title>
+        <meta name="description" content={app.description} />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <AppBar appBarLogo={<AppBarLogo />} navBarItems={navBarItems} />
       <main id="page-content">
         <Component {...pageProps} />

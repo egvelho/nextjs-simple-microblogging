@@ -1,42 +1,29 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
 import { faker } from "@faker-js/faker";
-import { userSchema, UserSchema } from "shared/schemas/user-schema";
-import { getConnection, sql } from "server/get-connection";
-import { JWT } from "server/jwt";
+import {
+  createAccountSchema,
+  CreateAccountSchema,
+} from "shared/schemas/create-account-schema";
+import { allowedMethods } from "server/handlers/allowed-methods";
+import { validateBody } from "server/handlers/validate-body";
+import { jwtAuthToken } from "server/handlers/jwt-auth-token";
+import { insertUser } from "server/queries/insert-user";
 
 export default async function createAccount(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method === "POST") {
-    const payload: UserSchema = req.body;
-    const payloadValid = userSchema.safeParse(req.body);
+  allowedMethods(req, res, ["POST"]);
+  const email = jwtAuthToken(req, res);
+  validateBody(req, res, createAccountSchema);
 
-    if (payloadValid) {
-      const decodedEmail = await JWT.verify(
-        (req.headers["authorization"] || "").split("Bearer ")[1]
-      );
+  const payload: CreateAccountSchema = req.body;
 
-      if (decodedEmail !== undefined) {
-        const connection = await getConnection();
-        const user = await connection((routine) =>
-          routine.query<UserSchema>(
-            sql`insert into users (
-                "username",
-                "firstName",
-                "lastName",
-                "email",
-                "avatar"
-              ) values (${payload.username}, ${payload.firstName}, ${
-              payload.lastName
-            }, ${
-              decodedEmail as string
-            }, ${faker.internet.avatar()}) returning id;`
-          )
-        );
+  const user = await insertUser({
+    ...payload,
+    email,
+    avatar: faker.internet.avatar(),
+  });
 
-        res.status(200).json({ user });
-      }
-    }
-  }
+  res.status(200).json({ user });
 }

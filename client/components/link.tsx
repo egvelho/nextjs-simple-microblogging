@@ -4,10 +4,11 @@ import type { Href } from "client/utils/href";
 
 export type LinkProps = {
   children: React.ReactNode;
-  href: Href;
+  href?: Href;
   prefetch?: boolean;
   anchor?: boolean;
   external?: boolean;
+  onClick?: () => Promise<void> | void;
 };
 
 export function Link({
@@ -16,31 +17,45 @@ export function Link({
   prefetch,
   anchor,
   external,
+  onClick,
 }: LinkProps) {
-  const link = <a className={anchor ? "anchor" : undefined}>{children}</a>;
+  const link = (
+    <a onClick={onClick} className={anchor ? "anchor" : undefined}>
+      {children}
+    </a>
+  );
 
-  if (external) {
-    return link;
+  const styles = (
+    <style jsx>{`
+      :global(a, a:visited) {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      :global(.anchor, .anchor:visited) {
+        color: ${colors.primary};
+      }
+
+      :global(.anchor:hover) {
+        text-decoration: underline;
+      }
+    `}</style>
+  );
+
+  if (external || onClick || !href) {
+    return (
+      <>
+        {link}
+        {styles}
+      </>
+    );
   } else {
     return (
       <>
         <NextLink href={href} prefetch={prefetch} key={href}>
           {link}
         </NextLink>
-        <style jsx>{`
-          :global(a, a:visited) {
-            color: inherit;
-            text-decoration: none;
-          }
-
-          :global(.anchor, .anchor:visited) {
-            color: ${colors.primary};
-          }
-
-          :global(.anchor:hover) {
-            text-decoration: underline;
-          }
-        `}</style>
+        {styles}
       </>
     );
   }
