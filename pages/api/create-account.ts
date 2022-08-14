@@ -7,7 +7,12 @@ import {
 import { allowedMethods } from "server/handlers/allowed-methods";
 import { validateBody } from "server/handlers/validate-body";
 import { jwtAuthToken } from "server/handlers/jwt-auth-token";
+import { checkUsernameUnique } from "server/queries/check-username-unique";
 import { insertUser } from "server/queries/insert-user";
+
+const texts = {
+  usernameNotUniqueMessage: "Alguém já está usa esse apelido",
+};
 
 export default async function createAccount(
   req: NextApiRequest,
@@ -19,11 +24,19 @@ export default async function createAccount(
 
   const payload: CreateAccountSchema = req.body;
 
-  const user = await insertUser({
-    ...payload,
-    email,
-    avatar: faker.internet.avatar(),
-  });
+  const usernameIsUnique = await checkUsernameUnique(payload.username);
 
-  res.status(200).json({ user });
+  if (usernameIsUnique) {
+    const user = await insertUser({
+      ...payload,
+      email,
+      avatar: faker.internet.avatar(),
+    });
+
+    res.status(200).json({ user });
+  } else {
+    res
+      .status(200)
+      .json({ errors: { username: [texts.usernameNotUniqueMessage] } });
+  }
 }
