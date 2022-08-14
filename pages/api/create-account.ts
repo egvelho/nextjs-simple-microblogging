@@ -11,7 +11,7 @@ import { checkUsernameUnique } from "server/queries/check-username-unique";
 import { insertUser } from "server/queries/insert-user";
 
 const texts = {
-  usernameNotUniqueMessage: "Alguém já está usa esse apelido",
+  usernameNotUniqueMessage: "Alguém já está usando esse apelido",
 };
 
 export default async function createAccount(
