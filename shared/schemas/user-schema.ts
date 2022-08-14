@@ -12,9 +12,9 @@ export const texts = {
   emptyFieldMessage: "Este campo não pode ficar vazio",
 };
 
-export type CreateAccountSchema = z.infer<typeof createAccountSchema>;
+export type UserSchema = z.infer<typeof userSchema>;
 
-export const createAccountSchema = z.object({
+export const userSchema = z.object({
   username: z
     .string()
     .min(1, texts.emptyFieldMessage)
@@ -35,4 +35,7 @@ export const createAccountSchema = z.object({
     })
     .min(2, texts.minLengthMessage(2))
     .max(32, texts.maxLengthMessage(32)),
+  avatar: z.string().optional(),
+  id: z.number().optional(),
+  createdAt: z.number().optional(),
 });

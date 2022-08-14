@@ -4,7 +4,7 @@ import { ClientRender } from "client/components/client-render";
 import { spacing } from "client/utils/spacing";
 
 export type MessageProps = {
-  id: string;
+  id: number;
   username: string;
   avatarSrc: AvatarProps["src"];
   createdAt: Date;

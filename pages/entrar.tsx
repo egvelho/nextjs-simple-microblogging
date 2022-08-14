@@ -12,8 +12,9 @@ import {
 } from "client/sign-in/email-verification-form";
 import { CreateAccountForm } from "client/sign-in/create-account-form";
 import { useForm } from "client/utils/use-form";
+import { useApi } from "client/utils/use-api";
 import { validateSchemaHOC } from "client/utils/validate-schema-hoc";
-import { createAccountSchema } from "shared/schemas/create-account-schema";
+import { userSchema } from "shared/schemas/user-schema";
 import { requestLoginCodeSchema } from "shared/schemas/request-login-code-schema";
 import { verifyLoginCodeSchema } from "shared/schemas/verify-login-code-schema";
 
@@ -115,7 +116,12 @@ export default function SignIn() {
   );
 }
 
-function EmailVerification({ step, setStep, loading }: SignInStateProps) {
+function EmailVerification({ step, setStep }: SignInStateProps) {
+  const requestLoginCode = useApi("POST", "requestLoginCode");
+  const verifyLoginCode = useApi("POST", "verifyLoginCode");
+
+  const loading = requestLoginCode.loading || verifyLoginCode.loading;
+
   const emailVerificationForm = useForm({
     initialState: initialEmailVerificationForm,
     async validate(form) {
@@ -136,18 +142,36 @@ function EmailVerification({ step, setStep, loading }: SignInStateProps) {
     <EmailVerificationForm
       loading={loading}
       form={emailVerificationFormInputs}
-      onSubmit={() => {
+      onSubmit={async () => {
+        const validationResults = await emailVerificationForm.pushFormErrors();
+
+        if (validationResults.success === false) {
+          return;
+        }
+
         if (step === "SUBMIT_EMAIL_STEP") {
-          setStep("VERIFY_EMAIL_STEP");
+          const response = await requestLoginCode.callEndpoint(
+            emailVerificationForm.state
+          );
+
+          if (response.data) {
+            setStep("VERIFY_EMAIL_STEP");
+          }
         }
 
         if (step === "VERIFY_EMAIL_STEP") {
-          setStep("CREATE_ACCOUNT_STEP");
-        }
+          const response = await verifyLoginCode.callEndpoint(
+            emailVerificationForm.state
+          );
 
-        displayToastMessage.publish({
-          message: texts.signInSuccessToast("NOME_DE_USUÁRIO"),
-        });
+          displayToastMessage.publish({
+            message: texts.signInSuccessToast("NOME_DE_USUÁRIO"),
+          });
+
+          if (response.data) {
+            setStep("CREATE_ACCOUNT_STEP");
+          }
+        }
       }}
       step={step as EmailVerificationFormStep}
     />
@@ -156,10 +180,11 @@ function EmailVerification({ step, setStep, loading }: SignInStateProps) {
 
 function CreateAccount({ step, setStep, loading }: SignInStateProps) {
   const router = useRouter();
+  const createAccount = useApi("post", "createAccount");
 
   const createAccountForm = useForm({
     initialState: initialCreateAccountForm,
-    validate: validateSchemaHOC(createAccountSchema),
+    validate: validateSchemaHOC(userSchema),
   });
 
   const createAccountFormInputs = createAccountForm.mapToFormInputs({
@@ -170,13 +195,25 @@ function CreateAccount({ step, setStep, loading }: SignInStateProps) {
 
   return (
     <CreateAccountForm
-      loading={loading}
+      loading={createAccount.loading}
       form={createAccountFormInputs}
       onSubmit={async () => {
-        await router.push(href("home"));
-        displayToastMessage.publish({
-          message: texts.createAccountSuccessToast,
-        });
+        const validationResults = await createAccountForm.pushFormErrors();
+
+        if (validationResults.success === false) {
+          return;
+        }
+
+        const response = await createAccount.callEndpoint(
+          createAccountForm.state
+        );
+
+        if (response.data) {
+          await router.push(href("home"));
+          displayToastMessage.publish({
+            message: texts.createAccountSuccessToast,
+          });
+        }
       }}
     />
   );

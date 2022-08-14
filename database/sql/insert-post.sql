@@ -1,0 +1,1 @@
+insert into posts ("message", "userId") values($1, $2);

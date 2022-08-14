@@ -12,12 +12,14 @@ export const texts = {
   emptyFieldMessage: "Este campo não pode ficar vazio",
 };
 
-export type CreatePostSchema = z.infer<typeof createPostSchema>;
+export type PostSchema = z.infer<typeof postSchema>;
 
-export const createPostSchema = z.object({
+export const postSchema = z.object({
   message: z
     .string()
     .min(1, texts.emptyFieldMessage)
     .min(2, texts.minLengthMessage(2))
     .max(app.messageMaxSize, texts.maxLengthMessage(app.messageMaxSize)),
+  id: z.number().optional(),
+  createdAt: z.number().optional(),
 });

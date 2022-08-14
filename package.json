@@ -6,7 +6,9 @@
   "scripts": {
     "start": "next start",
     "dev": "next dev",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "db:create-tables": "node database/scripts/create-tables.js",
+    "db:seed-database": "node database/scripts/seed-database.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +22,7 @@
   "homepage": "https://github.com/egvelho/nextjs-simple-microblogging#readme",
   "dependencies": {
     "@faker-js/faker": "^7.4.0",
+    "axios": "^0.27.2",
     "install": "^0.13.0",
     "jsonwebtoken": "^8.5.1",
     "luxon": "^3.0.1",
@@ -39,6 +42,8 @@
     "@types/nodemailer": "^6.4.5",
     "@types/pubsub-js": "^1.8.3",
     "@types/react": "^18.0.17",
+    "dotenv": "^16.0.1",
+    "pg": "^8.7.3",
     "typescript": "^4.7.4"
   }
 }

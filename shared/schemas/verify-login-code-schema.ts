@@ -14,5 +14,5 @@ export const verifyLoginCodeSchema = z.object({
     .string()
     .min(1, texts.emptyFieldMessage)
     .length(6, texts.verificationCodeLength(6))
-    .regex(/^[0-9]$/g, texts.verificationCodeLength(6)),
+    .regex(/^[0-9]*$/, texts.verificationCodeLength(6)),
 });

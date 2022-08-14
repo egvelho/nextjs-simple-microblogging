@@ -1,11 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function verifyLoginCode(
-  req: NextRequest,
-  res: NextResponse
+  req: NextApiRequest,
+  res: NextApiResponse
 ) {
-  if (req.method === "post") {
+  if (req.method === "POST") {
+    res.status(200).json({});
   }
-
-  return {};
 }

@@ -8,7 +8,7 @@ import { spacing } from "client/utils/spacing";
 import app from "shared/consts/app.json";
 import { useForm } from "client/utils/use-form";
 import { validateSchemaHOC } from "client/utils/validate-schema-hoc";
-import { createPostSchema } from "shared/schemas/create-post-schema";
+import { postSchema } from "shared/schemas/post-schema";
 
 const texts = {
   title: "Enviar mensagem",
@@ -36,7 +36,7 @@ export function WritePostDialog({
 
   const postFormControl = useForm({
     initialState: initialPostForm,
-    validate: validateSchemaHOC(createPostSchema),
+    validate: validateSchemaHOC(postSchema),
   });
 
   const postFormInputs = postFormControl.mapToFormInputs({
