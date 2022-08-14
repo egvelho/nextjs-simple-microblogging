@@ -17,13 +17,17 @@ const texts = {
 
 export type SignInDialogProps = {};
 
-const toggleSignInDialog = createPubSub("toggleSignInDialog");
+const toggleSignInDialog = createPubSub<boolean>("toggleSignInDialog");
 
 export function SignInDialog({}: SignInDialogProps) {
   const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
-    toggleSignInDialog.subscribe(async (message, toggleOpen: typeof open) => {
+    toggleSignInDialog.subscribe(async (message, toggleOpen) => {
+      if (toggleOpen === undefined) {
+        return;
+      }
+
       setOpen(toggleOpen);
     });
 

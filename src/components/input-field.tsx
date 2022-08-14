@@ -6,25 +6,29 @@ import type { InputHTMLAttributes } from "react";
 export type InputFieldProps = {
   value: string;
   onChange: (value: string) => Promise<void> | void;
+  onFocus?: () => Promise<void> | void;
+  onBlur?: () => Promise<void> | void;
   primaryColor?: boolean;
   secondaryColor?: boolean;
   placeholder?: string;
   disabled?: boolean;
   error?: boolean;
   maxLength?: number;
-  hintText?: React.ReactNode;
+  helperText?: React.ReactNode;
   type: InputHTMLAttributes<HTMLInputElement>["type"];
 };
 
 export function InputField({
   value,
   onChange,
+  onFocus,
+  onBlur,
   primaryColor,
   secondaryColor,
   placeholder,
   disabled,
   error,
-  hintText,
+  helperText,
   maxLength,
   type,
 }: InputFieldProps) {
@@ -44,8 +48,10 @@ export function InputField({
         value={value}
         maxLength={maxLength}
         onChange={(event) => onChange(event.target.value)}
+        onFocus={onFocus && ((event) => onFocus())}
+        onBlur={onBlur && ((event) => onBlur())}
       />
-      {hintText && (
+      {helperText && (
         <span
           className="input-field-hint-text"
           style={{
@@ -53,7 +59,7 @@ export function InputField({
             fontSize: layout.fontSize.hint,
           }}
         >
-          {hintText}
+          {helperText}
         </span>
       )}
       <style jsx>{`

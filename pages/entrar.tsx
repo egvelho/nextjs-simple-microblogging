@@ -8,13 +8,17 @@ import { Subtitle } from "src/components/subtitle";
 import { spacing } from "src/utils/spacing";
 import {
   EmailVerificationForm,
-  EmailVerificationFormFields,
   EmailVerificationFormStep,
 } from "src/sign-in/email-verification-form";
+import { CreateAccountForm } from "src/sign-in/create-account-form";
+import { useForm } from "src/utils/use-form";
+import { validateSchemaHOC } from "src/utils/validate-schema-hoc";
 import {
-  CreateAccountForm,
-  CreateAccountFormFields,
-} from "src/sign-in/create-account-form";
+  createAccountSchema,
+  CreateAccountSchema,
+} from "src/schemas/create-account-schema";
+import { submitEmailSchema } from "src/schemas/submit-email-schema";
+import { verifyEmailSchema } from "src/schemas/verify-email-schema";
 
 const texts = {
   submitEmailStepTitle: "Acessar o microblogue",
@@ -25,7 +29,11 @@ const texts = {
   createAccountStepTitle: "Seja bem-vindo ao microblogue!",
   createAccountStepSubtitle:
     "Por favor, preencha os detalhes da sua conta para continuar.",
+  createAccountUsernamePlaceholder: "Apelido",
+  createAccountFirstNamePlaceholder: "Nome",
+  createAccountLastNamePlaceholder: "Sobrenome",
   emailPlaceholder: "Email",
+  emailVerificationCodePlaceholder: "Código de verificação",
   submitEmailButton: "Continuar",
   createAccountSuccessToast: "Sua conta criada com sucesso!",
   signInSuccessToast: (username: string) =>
@@ -44,12 +52,12 @@ const mapStepToSubtitle: { [step in SignInStep]: string } = {
   CREATE_ACCOUNT_STEP: texts.createAccountStepSubtitle,
 };
 
-const initialEmailVerificationFormFields: EmailVerificationFormFields = {
+const initialEmailVerificationForm = {
   email: "",
   verificationCode: "",
 };
 
-const initialCreateAccountFormFields: CreateAccountFormFields = {
+const initialCreateAccountForm = {
   firstName: "",
   lastName: "",
   username: "",
@@ -59,52 +67,24 @@ const displayToastMessage = createPubSub("displayToastMessage");
 
 type SignInStep = "CREATE_ACCOUNT_STEP" | EmailVerificationFormStep;
 
+type SignInStateProps = {
+  step: SignInStep;
+  setStep: (step: SignInStep) => void;
+  loading: boolean;
+};
+
 export default function SignIn() {
-  const router = useRouter();
+  const loading = false;
   const [step, setStep] = React.useState("SUBMIT_EMAIL_STEP" as SignInStep);
-
-  const [emailVerificationForm, setEmailVerificationForm] = React.useState(
-    initialEmailVerificationFormFields
-  );
-
-  const [createAccountForm, setCreateAccountForm] = React.useState(
-    initialCreateAccountFormFields
-  );
 
   const pageTitle = mapStepToTitle[step];
   const pageSubtitle = mapStepToSubtitle[step];
 
   const currentStep =
     step === "CREATE_ACCOUNT_STEP" ? (
-      <CreateAccountForm
-        form={createAccountForm}
-        setForm={setCreateAccountForm}
-        onSubmit={async () => {
-          await router.push(href("home"));
-          displayToastMessage.publish({
-            message: texts.createAccountSuccessToast,
-          });
-        }}
-      />
+      <CreateAccount step={step} setStep={setStep} loading={loading} />
     ) : (
-      <EmailVerificationForm
-        form={emailVerificationForm}
-        setForm={setEmailVerificationForm}
-        onSubmit={() => {
-          if (step === "SUBMIT_EMAIL_STEP") {
-            setStep("VERIFY_EMAIL_STEP");
-          }
-
-          if (step === "VERIFY_EMAIL_STEP") {
-            setStep("CREATE_ACCOUNT_STEP");
-          }
-
-          displayToastMessage.publish({
-            message: texts.signInSuccessToast("NOME_DE_USUÁRIO"),
-          });
-        }}
-        step={step}
-      />
+      <EmailVerification step={step} setStep={setStep} loading={loading} />
     );
 
   return (
@@ -135,5 +115,72 @@ export default function SignIn() {
         }
       `}</style>
     </div>
+  );
+}
+
+function EmailVerification({ step, setStep, loading }: SignInStateProps) {
+  const emailVerificationForm = useForm({
+    initialState: initialEmailVerificationForm,
+    async validate(form) {
+      if (step === "SUBMIT_EMAIL_STEP") {
+        return validateSchemaHOC(submitEmailSchema)(form);
+      } else {
+        return validateSchemaHOC(verifyEmailSchema)(form);
+      }
+    },
+  });
+
+  const emailVerificationFormInputs = emailVerificationForm.mapToFormInputs({
+    email: texts.emailPlaceholder,
+    verificationCode: texts.emailVerificationCodePlaceholder,
+  });
+
+  return (
+    <EmailVerificationForm
+      loading={loading}
+      form={emailVerificationFormInputs}
+      onSubmit={() => {
+        if (step === "SUBMIT_EMAIL_STEP") {
+          setStep("VERIFY_EMAIL_STEP");
+        }
+
+        if (step === "VERIFY_EMAIL_STEP") {
+          setStep("CREATE_ACCOUNT_STEP");
+        }
+
+        displayToastMessage.publish({
+          message: texts.signInSuccessToast("NOME_DE_USUÁRIO"),
+        });
+      }}
+      step={step as EmailVerificationFormStep}
+    />
+  );
+}
+
+function CreateAccount({ step, setStep, loading }: SignInStateProps) {
+  const router = useRouter();
+
+  const createAccountForm = useForm({
+    initialState: initialCreateAccountForm,
+    validate: validateSchemaHOC(createAccountSchema),
+  });
+
+  const createAccountFormInputs = createAccountForm.mapToFormInputs({
+    firstName: texts.createAccountFirstNamePlaceholder,
+    lastName: texts.createAccountLastNamePlaceholder,
+    username: texts.createAccountUsernamePlaceholder,
+  });
+
+  return (
+    <CreateAccountForm
+      loading={loading}
+      form={createAccountFormInputs}
+      onSubmit={async () => {
+        await router.push(href("home"));
+        displayToastMessage.publish({
+          message: texts.createAccountSuccessToast,
+        });
+      }}
+    />
   );
 }

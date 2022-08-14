@@ -5,25 +5,29 @@ import { spacing } from "src/utils/spacing";
 export type TextAreaProps = {
   value: string;
   onChange: (value: string) => Promise<void> | void;
+  onFocus?: () => Promise<void> | void;
+  onBlur?: () => Promise<void> | void;
   primaryColor?: boolean;
   secondaryColor?: boolean;
   placeholder?: string;
   error?: boolean;
   disabled?: boolean;
   rows?: number;
-  hintText?: React.ReactNode;
+  helperText?: React.ReactNode;
   maxLength?: number;
 };
 
 export function TextArea({
   value,
   onChange,
+  onFocus,
+  onBlur,
   primaryColor,
   secondaryColor,
   placeholder,
   rows,
   error,
-  hintText,
+  helperText,
   maxLength,
   disabled,
 }: TextAreaProps) {
@@ -44,8 +48,10 @@ export function TextArea({
         placeholder={placeholder}
         value={value}
         onChange={(event) => onChange(event.target.value)}
+        onFocus={onFocus && ((event) => onFocus())}
+        onBlur={onBlur && ((event) => onBlur())}
       />
-      {hintText && <span className="text-area-hint-text">{hintText}</span>}
+      {helperText && <span className="text-area-hint-text">{helperText}</span>}
       <style jsx>{`
         .text-area {
           display: block;

@@ -1,5 +1,5 @@
 import type { GetStaticProps } from "next";
-import { Feed, FeedProps } from "src/feed/feed";
+import { Feed } from "src/feed/feed";
 import { generateMessages, GeneratedMessage } from "src/generate-messages";
 
 type HomeProps = {

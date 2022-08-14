@@ -2,17 +2,18 @@ import React from "react";
 import { Button } from "src/components/button";
 import { InputField } from "src/components/input-field";
 import { spacing } from "src/utils/spacing";
+import type { FormInput } from "src/utils/use-form";
 
 export type EmailVerificationFormProps = {
-  form: EmailVerificationFormFields;
-  setForm: (form: EmailVerificationFormFields) => Promise<void> | void;
+  form: EmailVerificationFormInputs;
   step: EmailVerificationFormStep;
   onSubmit: () => Promise<void> | void;
+  loading: boolean;
 };
 
-export type EmailVerificationFormFields = {
-  email: string;
-  verificationCode: string;
+export type EmailVerificationFormInputs = {
+  email: FormInput<string>;
+  verificationCode: FormInput<string>;
 };
 
 export type EmailVerificationFormStep =
@@ -20,8 +21,6 @@ export type EmailVerificationFormStep =
   | "VERIFY_EMAIL_STEP";
 
 const texts = {
-  emailPlaceholder: "Email",
-  verificationCodePlaceholder: "Código de verificação",
   submitEmailButton: "Verificar email",
   verifyEmailButton: "Continuar",
 };
@@ -39,7 +38,7 @@ export function EmailVerificationForm(props: EmailVerificationFormProps) {
 
 function SubmitEmailForm({
   form,
-  setForm,
+  loading,
   onSubmit,
 }: EmailVerificationFormProps) {
   return (
@@ -53,11 +52,14 @@ function SubmitEmailForm({
       <div className="email-input-field">
         <InputField
           type="email"
-          placeholder={texts.emailPlaceholder}
-          value={form.email}
-          onChange={(email) => {
-            setForm({ ...form, email });
-          }}
+          placeholder={form.email.label}
+          value={form.email.value}
+          disabled={loading}
+          helperText={form.email.helperText}
+          error={form.email.error}
+          onChange={(firstName) => form.email.onChange(firstName)}
+          onFocus={() => form.email.onFocus()}
+          onBlur={() => form.email.onBlur()}
         />
       </div>
       <Button formSubmit label={texts.submitEmailButton} />
@@ -72,7 +74,7 @@ function SubmitEmailForm({
 
 function VerifyEmailForm({
   form,
-  setForm,
+  loading,
   onSubmit,
 }: EmailVerificationFormProps) {
   return (
@@ -85,12 +87,15 @@ function VerifyEmailForm({
     >
       <div className="verification-code-input-field">
         <InputField
-          type="email"
-          placeholder={texts.verificationCodePlaceholder}
-          value={form.verificationCode}
-          onChange={(verificationCode) => {
-            setForm({ ...form, verificationCode });
-          }}
+          type="text"
+          placeholder={form.verificationCode.label}
+          value={form.verificationCode.value}
+          disabled={loading}
+          helperText={form.verificationCode.helperText}
+          error={form.verificationCode.error}
+          onChange={(firstName) => form.verificationCode.onChange(firstName)}
+          onFocus={() => form.verificationCode.onFocus()}
+          onBlur={() => form.verificationCode.onBlur()}
         />
       </div>
       <Button formSubmit label={texts.verifyEmailButton} />

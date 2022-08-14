@@ -1,5 +1,4 @@
 import layout from "src/consts/layout.json";
-import { spacing } from "src/utils/spacing";
 
 export type TitleProps = {
   children: React.ReactNode;

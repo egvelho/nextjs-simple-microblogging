@@ -1,11 +1,14 @@
 import React from "react";
-import layout from "src/consts/layout.json";
 import { Dialog, DialogProps } from "src/components/dialog";
 import { Button } from "src/components/button";
 import { Title } from "src/components/title";
 import { Subtitle } from "src/components/subtitle";
 import { TextArea } from "src/components/text-area";
 import { spacing } from "src/utils/spacing";
+import app from "src/consts/app.json";
+import { useForm } from "src/utils/use-form";
+import { validateSchemaHOC } from "src/utils/validate-schema-hoc";
+import { postSchema } from "src/schemas/post-schema";
 
 const texts = {
   title: "Enviar mensagem",
@@ -17,15 +20,39 @@ const texts = {
     `Ainda restam ${remainingChars} caracteres`,
 };
 
-const messageMaxLength = 140;
+const messageMaxLength = app.messageMaxSize;
 
 export type WritePostDialogProps = Omit<DialogProps, "children">;
+
+const initialPostForm = {
+  message: "",
+};
 
 export function WritePostDialog({
   open,
   onRequestClose,
 }: WritePostDialogProps) {
-  const [message, setMessage] = React.useState("");
+  const loading = false;
+
+  const postFormControl = useForm({
+    initialState: initialPostForm,
+    validate: validateSchemaHOC(postSchema),
+  });
+
+  const postFormInputs = postFormControl.mapToFormInputs({
+    message: texts.messagePlaceholder,
+  });
+
+  const messageHintText =
+    postFormControl.form.message.errors.length > 0 ? (
+      postFormControl.form.message.errors[0]
+    ) : (
+      <span style={{ textAlign: "right", display: "block" }}>
+        {texts.messageHintText(
+          messageMaxLength - postFormControl.state.message.length
+        )}
+      </span>
+    );
 
   return (
     <Dialog open={open} onRequestClose={onRequestClose}>
@@ -38,16 +65,16 @@ export function WritePostDialog({
           maxLength={messageMaxLength}
           rows={5}
           placeholder={texts.messagePlaceholder}
-          value={message}
-          onChange={(nextMessage) => {
-            setMessage(
-              nextMessage.replaceAll(/ +/g, " ").replaceAll(/\n+/g, "\n")
-            );
-          }}
-          hintText={
-            <span style={{ textAlign: "right", display: "block" }}>
-              {texts.messageHintText(messageMaxLength - message.length)}
-            </span>
+          value={postFormInputs.message.value}
+          disabled={loading}
+          error={postFormInputs.message.error}
+          onFocus={postFormInputs.message.onFocus}
+          onBlur={postFormInputs.message.onBlur}
+          helperText={messageHintText}
+          onChange={(message) =>
+            postFormInputs.message.onChange(
+              message.replaceAll(/ +/g, " ").replaceAll(/\n+/g, "\n")
+            )
           }
         />
         <div
@@ -56,7 +83,11 @@ export function WritePostDialog({
             marginTop: spacing(0.75),
           }}
         >
-          <Button onClick={() => {}} label={texts.sendMessage} loading />
+          <Button
+            onClick={() => {}}
+            label={texts.sendMessage}
+            loading={loading}
+          />
         </div>
       </div>
       <style jsx>{`

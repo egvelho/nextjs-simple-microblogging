@@ -7,9 +7,7 @@ export function createPubSub<T>(event: keyof typeof events) {
     publish(data: T) {
       return BasePubSub.publish(topic, data);
     },
-    async subscribe(
-      callback: (message: typeof event, data: T) => Promise<void>
-    ) {
+    async subscribe(callback: PubSubJS.SubscriptionListener<T>) {
       BasePubSub.subscribe(topic, callback);
     },
     unsubscribe() {

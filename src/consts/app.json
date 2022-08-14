@@ -1,3 +1,4 @@
 {
-  "name": "Microblogue Next.js"
+  "name": "Microblogue Next.js",
+  "messageMaxSize": 140
 }

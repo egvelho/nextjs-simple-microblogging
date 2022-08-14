@@ -20,7 +20,7 @@ const initialState = {
   error: false,
 };
 
-const displayToastMessage = createPubSub("displayToastMessage");
+const displayToastMessage = createPubSub<ToastState>("displayToastMessage");
 
 export function Toast({
   primaryColor,
@@ -30,7 +30,11 @@ export function Toast({
   const [state, setState] = React.useState(initialState as ToastState);
 
   React.useEffect(() => {
-    displayToastMessage.subscribe(async (message, toastState: ToastState) => {
+    displayToastMessage.subscribe(async (message, toastState) => {
+      if (toastState === undefined) {
+        return;
+      }
+
       setState(toastState);
       setTimeout(() => setState(initialState), closeAfter);
     });
