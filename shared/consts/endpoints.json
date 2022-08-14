@@ -1,5 +1,6 @@
 {
   "createAccount": "/api/create-account",
   "requestLoginCode": "/api/auth/request-login-code",
-  "verifyLoginCode": "/api/auth/verify-login-code"
+  "verifyLoginCode": "/api/auth/verify-login-code",
+  "createPost": "/api/posts"
 }

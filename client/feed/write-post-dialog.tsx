@@ -4,7 +4,9 @@ import { Button } from "client/components/button";
 import { Title } from "client/components/title";
 import { Subtitle } from "client/components/subtitle";
 import { TextArea } from "client/components/text-area";
+import { createPubSub } from "client/utils/create-pubsub";
 import { spacing } from "client/utils/spacing";
+import { useApi } from "client/utils/use-api";
 import app from "shared/consts/app.json";
 import { useForm } from "client/utils/use-form";
 import { validateSchemaHOC } from "client/utils/validate-schema-hoc";
@@ -15,10 +17,13 @@ const texts = {
   subtitle: (messageMaxLength: number) =>
     `Por favor, digite a sua mensagem em até ${messageMaxLength} caracteres.`,
   sendMessage: "Enviar",
+  writePostSuccess: "Mensagem enviada com sucesso",
   messagePlaceholder: "Digite sua mensagem",
   messageHintText: (remainingChars: number) =>
     `Ainda restam ${remainingChars} caracteres`,
 };
+
+const displayToastMessage = createPubSub("displayToastMessage");
 
 const messageMaxLength = app.messageMaxSize;
 
@@ -32,7 +37,7 @@ export function WritePostDialog({
   open,
   onRequestClose,
 }: WritePostDialogProps) {
-  const loading = false;
+  const createPost = useApi("post", "createPost");
 
   const postFormControl = useForm({
     initialState: initialPostForm,
@@ -55,18 +60,41 @@ export function WritePostDialog({
     );
 
   return (
-    <Dialog open={open} onRequestClose={onRequestClose}>
+    <Dialog
+      open={open}
+      onRequestClose={createPost.loading ? () => {} : onRequestClose}
+    >
       <div className="write-post-dialog-header">
         <Title>{texts.title}</Title>
         <Subtitle>{texts.subtitle(messageMaxLength)}</Subtitle>
       </div>
-      <div>
+      <form
+        onSubmit={async (event) => {
+          event.preventDefault();
+
+          const validationResults = await postFormControl.pushFormErrors();
+
+          if (validationResults.success === false) {
+            return;
+          }
+
+          const response = await createPost.callEndpoint(postFormControl.state);
+
+          if (response.data) {
+            onRequestClose();
+
+            displayToastMessage.publish({
+              message: texts.writePostSuccess,
+            });
+          }
+        }}
+      >
         <TextArea
           maxLength={messageMaxLength}
           rows={5}
           placeholder={texts.messagePlaceholder}
           value={postFormInputs.message.value}
-          disabled={loading}
+          disabled={createPost.loading}
           error={postFormInputs.message.error}
           onFocus={postFormInputs.message.onFocus}
           onBlur={postFormInputs.message.onBlur}
@@ -84,12 +112,12 @@ export function WritePostDialog({
           }}
         >
           <Button
-            onClick={() => {}}
+            formSubmit
             label={texts.sendMessage}
-            loading={loading}
+            loading={createPost.loading}
           />
         </div>
-      </div>
+      </form>
       <style jsx>{`
         .write-post-dialog-header {
           margin-bottom: ${spacing(3)};

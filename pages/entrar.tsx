@@ -14,6 +14,7 @@ import { CreateAccountForm } from "client/sign-in/create-account-form";
 import { useForm } from "client/utils/use-form";
 import { useApi } from "client/utils/use-api";
 import { validateSchemaHOC } from "client/utils/validate-schema-hoc";
+import { Token } from "client/utils/token";
 import { userSchema } from "shared/schemas/user-schema";
 import { requestLoginCodeSchema } from "shared/schemas/request-login-code-schema";
 import { verifyLoginCodeSchema } from "shared/schemas/verify-login-code-schema";
@@ -31,6 +32,7 @@ const texts = {
   createAccountFirstNamePlaceholder: "Nome",
   createAccountLastNamePlaceholder: "Sobrenome",
   emailPlaceholder: "Email",
+  tokenHidden: "Token (oculto)",
   emailVerificationCodePlaceholder: "Código de verificação",
   submitEmailButton: "Continuar",
   createAccountSuccessToast: "Sua conta criada com sucesso!",
@@ -53,6 +55,7 @@ const mapStepToSubtitle: { [step in SignInStep]: string } = {
 const initialEmailVerificationForm = {
   email: "",
   verificationCode: "",
+  token: "",
 };
 
 const initialCreateAccountForm = {
@@ -136,6 +139,7 @@ function EmailVerification({ step, setStep }: SignInStateProps) {
   const emailVerificationFormInputs = emailVerificationForm.mapToFormInputs({
     email: texts.emailPlaceholder,
     verificationCode: texts.emailVerificationCodePlaceholder,
+    token: texts.tokenHidden,
   });
 
   return (
@@ -155,6 +159,9 @@ function EmailVerification({ step, setStep }: SignInStateProps) {
           );
 
           if (response.data) {
+            emailVerificationForm.setFormState({
+              token: response.data.token,
+            });
             setStep("VERIFY_EMAIL_STEP");
           }
         }
@@ -164,12 +171,16 @@ function EmailVerification({ step, setStep }: SignInStateProps) {
             emailVerificationForm.state
           );
 
-          displayToastMessage.publish({
-            message: texts.signInSuccessToast("NOME_DE_USUÁRIO"),
-          });
-
           if (response.data) {
-            setStep("CREATE_ACCOUNT_STEP");
+            Token.set(response.data.token);
+
+            if (response.data.user) {
+              displayToastMessage.publish({
+                message: texts.signInSuccessToast(response.data.username),
+              });
+            } else {
+              setStep("CREATE_ACCOUNT_STEP");
+            }
           }
         }
       }}

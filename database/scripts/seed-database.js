@@ -34,21 +34,23 @@ function generatePost(userId) {
 
   const usersToInsert = Array.from({ length: 12 }).map(() => generateUser());
 
+  let usersIds = [];
+
   for (const user of usersToInsert) {
     const userRes = await pgClient.query(insertUserQuery, Object.values(user));
+    usersIds.push(userRes.rows[0].id);
     console.log(userRes);
+  }
 
-    const postsToInsert = Array.from({
-      length: 5 + parseInt(Math.random() * 10),
-    }).map(() => generatePost(userRes.rows[0].id));
+  const postsToInsert = Array.from({
+    length: 50,
+  }).map(() =>
+    generatePost(usersIds[parseInt(Math.random() * usersIds.length)])
+  );
 
-    for (const post of postsToInsert) {
-      const postRes = await pgClient.query(
-        insertPostQuery,
-        Object.values(post)
-      );
-      console.log(postRes);
-    }
+  for (const post of postsToInsert) {
+    const postRes = await pgClient.query(insertPostQuery, Object.values(post));
+    console.log(postRes);
   }
 
   await pgClient.end();

@@ -20,7 +20,7 @@ export const userSchema = z.object({
     .min(1, texts.emptyFieldMessage)
     .min(2, texts.minLengthMessage(4))
     .max(16, texts.maxLengthMessage(16))
-    .regex(/^[a-zA-Z0-9]$/g),
+    .regex(/^[a-zA-Z0-9]*$/, texts.usernameInvalidMessage),
   firstName: z
     .string()
     .min(1, {

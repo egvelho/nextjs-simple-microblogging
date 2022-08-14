@@ -3,6 +3,7 @@ import { spacing } from "client/utils/spacing";
 import { resource } from "client/utils/resource";
 import { FAButton, FAButtonProps } from "client/components/fa-button";
 import { createPubSub } from "client/utils/create-pubsub";
+import { Token } from "client/utils/token";
 import colors from "shared/consts/colors.json";
 import { Message, MessageProps } from "./message";
 import { WritePostDialog } from "./write-post-dialog";
@@ -33,8 +34,12 @@ export function Feed({ messages }: FeedProps) {
       <FAButton
         onClick={() => {
           const toggleOpen = true;
-          //setWritePostDialogOpen(true);
-          toggleSignInDialog.publish(toggleOpen);
+
+          if (Token.get() !== undefined) {
+            setWritePostDialogOpen(toggleOpen);
+          } else {
+            toggleSignInDialog.publish(toggleOpen);
+          }
         }}
         iconSrc={resource("writeMessageIcon")}
         position={fabPosition}

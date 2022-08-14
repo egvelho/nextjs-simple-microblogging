@@ -61,7 +61,7 @@ export function CreateAccountForm({
     <div className="input-field-wrapper">
       <InputField
         type="text"
-        placeholder={form.lastName.label}
+        placeholder={form.username.label}
         value={form.username.value}
         disabled={loading}
         helperText={form.username.helperText}

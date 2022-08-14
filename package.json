@@ -8,8 +8,8 @@
     "start": "next start",
     "dev": "next dev",
     "typecheck": "tsc",
-    "db:create-tables": "node database/scripts/create-tables.js",
-    "db:seed-database": "node database/scripts/seed-database.js"
+    "create-tables": "node database/scripts/create-tables.js",
+    "seed-database": "node database/scripts/seed-database.js"
   },
   "repository": {
     "type": "git",

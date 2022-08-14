@@ -27,7 +27,7 @@ export function Message({
           <Avatar size={avatarSize} src={avatarSrc} />
         </div>
         <div className="message-title">
-          <span className="message-username">{username}</span>
+          <span className="message-username">@{username}</span>
           <ClientRender>
             <time
               className="message-created-at"

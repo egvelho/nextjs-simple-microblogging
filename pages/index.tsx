@@ -24,6 +24,7 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
         users.username
       from posts
       left join users on users.id = "userId"
+      order by posts."createdAt" desc
       limit 10`
     )
   );
