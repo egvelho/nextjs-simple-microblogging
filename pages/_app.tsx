@@ -15,7 +15,7 @@ import app from "shared/consts/app.json";
 import type { AppProps } from "next/app";
 
 const texts = {
-  sourceLinkLabel: "@nextjs-simple-microblogging",
+  sourceLinkLabel: "GitHub",
   logoutButton: "Sair",
   logoutToastMessage: "Sua sessão foi encerrada. Até mais!",
 };
