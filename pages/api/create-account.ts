@@ -4,9 +4,9 @@ import {
   createAccountSchema,
   CreateAccountSchema,
 } from "shared/schemas/create-account-schema";
-import { allowedMethods } from "server/handlers/allowed-methods";
-import { validateBody } from "server/handlers/validate-body";
-import { jwtAuthToken } from "server/handlers/jwt-auth-token";
+import { allowedMethods } from "server/helpers/allowed-methods";
+import { validateBody } from "server/helpers/validate-body";
+import { jwtAuthToken } from "server/helpers/jwt-auth-token";
 import { checkUsernameUnique } from "server/queries/check-username-unique";
 import { insertUser } from "server/queries/insert-user";
 
@@ -18,12 +18,22 @@ export default async function createAccount(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  allowedMethods(req, res, ["POST"]);
+  const allowed = allowedMethods(req, res, ["POST"]);
+  if (!allowed) {
+    return;
+  }
+
   const email = jwtAuthToken(req, res);
-  validateBody(req, res, createAccountSchema);
+  if (!email) {
+    return;
+  }
+
+  const valid = validateBody(req, res, createAccountSchema);
+  if (!valid) {
+    return;
+  }
 
   const payload: CreateAccountSchema = req.body;
-
   const usernameIsUnique = await checkUsernameUnique(payload.username);
 
   if (usernameIsUnique) {

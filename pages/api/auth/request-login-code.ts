@@ -3,8 +3,8 @@ import {
   requestLoginCodeSchema,
   RequestLoginCodeSchema,
 } from "shared/schemas/request-login-code-schema";
-import { allowedMethods } from "server/handlers/allowed-methods";
-import { validateBody } from "server/handlers/validate-body";
+import { allowedMethods } from "server/helpers/allowed-methods";
+import { validateBody } from "server/helpers/validate-body";
 import { insertCode } from "server/queries/insert-code";
 import { Email } from "server/email";
 
@@ -19,8 +19,15 @@ export default async function requestLoginCode(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  allowedMethods(req, res, ["POST"]);
-  validateBody(req, res, requestLoginCodeSchema);
+  const allowed = allowedMethods(req, res, ["POST"]);
+  if (!allowed) {
+    return;
+  }
+
+  const valid = validateBody(req, res, requestLoginCodeSchema);
+  if (!valid) {
+    return;
+  }
 
   const payload: RequestLoginCodeSchema = req.body;
   const code = generateCode();

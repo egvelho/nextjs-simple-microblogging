@@ -14,7 +14,7 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
     props: {
       latestPosts,
     },
-    revalidate: 5,
+    revalidate: 10,
   };
 };
 
@@ -27,9 +27,5 @@ export default function Home({ latestPosts }: HomeProps) {
     createdAt: new Date(post.createdAt as number),
   }));
 
-  return (
-    <div>
-      <Feed messages={messages} />
-    </div>
-  );
+  return <Feed messages={messages} />;
 }

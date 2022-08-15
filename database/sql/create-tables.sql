@@ -22,6 +22,6 @@ create table if not exists "posts" (
 
 create table if not exists "tokens" (
     "id" serial primary key not null,
-    "email" varchar (254) unique not null,
+    "email" varchar (254) not null,
     "code" text not null
 );

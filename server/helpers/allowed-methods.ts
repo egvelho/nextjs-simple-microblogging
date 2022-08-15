@@ -9,5 +9,8 @@ export function allowedMethods(
 ) {
   if (!allowedMethods.includes(req.method as Method)) {
     res.status(405).end(`Method ${req.method} Not Allowed`);
+    return false;
   }
+
+  return true;
 }

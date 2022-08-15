@@ -3,8 +3,8 @@ import {
   verifyLoginCodeSchema,
   VerifyLoginCodeSchema,
 } from "shared/schemas/verify-login-code-schema";
-import { validateBody } from "server/handlers/validate-body";
-import { allowedMethods } from "server/handlers/allowed-methods";
+import { validateBody } from "server/helpers/validate-body";
+import { allowedMethods } from "server/helpers/allowed-methods";
 import { JWT } from "server/jwt";
 import { getUserFromEmail } from "server/queries/get-user-from-email";
 import { isCodeMatches } from "server/queries/is-code-matches";
@@ -17,8 +17,15 @@ export default async function verifyLoginCode(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  allowedMethods(req, res, ["POST"]);
-  validateBody(req, res, verifyLoginCodeSchema);
+  const allowed = allowedMethods(req, res, ["POST"]);
+  if (!allowed) {
+    return;
+  }
+
+  const valid = validateBody(req, res, verifyLoginCodeSchema);
+  if (!valid) {
+    return;
+  }
 
   const payload: VerifyLoginCodeSchema = req.body;
   const receivedCode = payload.verificationCode;
