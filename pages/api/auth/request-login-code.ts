@@ -5,7 +5,7 @@ import {
 } from "shared/schemas/request-login-code-schema";
 import { allowedMethods } from "server/handlers/allowed-methods";
 import { validateBody } from "server/handlers/validate-body";
-import { JWT } from "server/jwt";
+import { insertCode } from "server/queries/insert-code";
 import { Email } from "server/email";
 
 const texts = {
@@ -25,7 +25,6 @@ export default async function requestLoginCode(
   const payload: RequestLoginCodeSchema = req.body;
   const code = generateCode();
   const email = payload.email;
-  const token = JWT.sign({ code, email });
 
   await Email.send({
     to: payload.email,
@@ -33,7 +32,9 @@ export default async function requestLoginCode(
     markdown: texts.emailCodeContent(code),
   });
 
-  res.status(200).json({ token });
+  await insertCode({ code, email });
+
+  res.status(200).json({});
 }
 
 function generateCode() {

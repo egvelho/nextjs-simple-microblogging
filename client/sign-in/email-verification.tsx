@@ -16,7 +16,6 @@ import type { SignInStateProps } from "./types";
 
 const texts = {
   emailPlaceholder: "Email",
-  tokenHidden: "Token (oculto)",
   emailVerificationSuccess: "Email verificado com sucesso!",
   emailVerificationCodePlaceholder: "Código de verificação",
   signInSuccessToast: (username: string) =>
@@ -29,7 +28,6 @@ const displayToastMessage = createPubSub("displayToastMessage");
 const initialEmailVerificationForm = {
   email: "",
   verificationCode: "",
-  token: "",
 };
 
 export function EmailVerification({ step, setStep }: SignInStateProps) {
@@ -54,7 +52,6 @@ export function EmailVerification({ step, setStep }: SignInStateProps) {
   const emailVerificationFormInputs = emailVerificationForm.mapToFormInputs({
     email: texts.emailPlaceholder,
     verificationCode: texts.emailVerificationCodePlaceholder,
-    token: texts.tokenHidden,
   });
 
   async function onSubmitEmailStep() {
@@ -69,7 +66,6 @@ export function EmailVerification({ step, setStep }: SignInStateProps) {
         await emailVerificationForm.reset();
         emailVerificationForm.setFormState({
           email: emailVerificationForm.state.email,
-          token: response.data.token,
         });
         setStep("VERIFY_EMAIL_STEP");
       }

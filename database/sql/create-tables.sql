@@ -1,5 +1,6 @@
 drop table if exists posts;
 drop table if exists users;
+drop table if exists tokens;
 
 create table if not exists "users" (
     "id" serial primary key not null,
@@ -17,4 +18,10 @@ create table if not exists "posts" (
     "userId" integer not null,
     "createdAt" timestamp not null default now(),
     foreign key ("userId") references users("id")
+);
+
+create table if not exists "tokens" (
+    "id" serial primary key not null,
+    "email" varchar (254) unique not null,
+    "code" text not null
 );
