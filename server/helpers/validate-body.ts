@@ -20,8 +20,7 @@ export function validateBody<T extends z.ZodRawShape>(
       }>
     );
 
-    res.setHeader("Content-Type", "application/json; charset=utf-8");
-    res.status(200).end(JSON.stringify({ errors }));
+    res.status(200).json({ errors });
     return false;
   }
 
